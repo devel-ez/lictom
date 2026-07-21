@@ -1,18 +1,17 @@
 {
   "name": "Lictom",
   "version": "1.0.0",
-  "manifest_version": 3,
+  "manifest_version": 2,
   "description": "Controle de Saldos de Pregão - 23ª Esqd C Sl",
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "permissions": [
     "storage",
-    "alarms"
-  ],
-  "host_permissions": [
+    "alarms",
     "https://sag.eb.mil.br/*",
     "https://*.github.io/*"
   ],
   "background": {
-    "service_worker": "background/service-worker.js"
+    "scripts": ["background/service-worker.js"]
   },
   "content_scripts": [
     {
@@ -21,7 +20,7 @@
       "run_at": "document_idle"
     }
   ],
-  "action": {
+  "browser_action": {
     "default_popup": "popup/popup.html",
     "default_icon": {
       "16": "icons/icon16.png",
