@@ -13,21 +13,17 @@
     return false;
   }
 
-  function isSAGPage() {
-    const url = window.location.href;
-    if (url.includes('/index.php') && !url.includes('gestao')) return false;
-    if (url.includes('/login')) return false;
-    if (url.includes('/logout')) return false;
-    if (url.includes('/autentic')) return false;
-    return true;
-  }
-
   async function init() {
-    if (isLoginPage()) return;
-    if (!isSAGPage()) return;
+    if (isLoginPage()) {
+      console.log('[Lictom] Tela de login detectada, aguardando...');
+      return;
+    }
 
     const stored = await chrome.storage.local.get(['enabled', 'code']);
-    if (!stored.enabled) return;
+    if (!stored.enabled) {
+      console.log('[Lictom] Extensão desabilitada');
+      return;
+    }
 
     const htmlUrl = chrome.runtime.getURL('content/dashboard.html');
     const resp = await fetch(htmlUrl);
@@ -38,6 +34,7 @@
 
     document.getElementById('app-dashboard').style.display = 'none';
 
+    console.log('[Lictom] Dashboard injetado com sucesso');
     Dashboard.init();
   }
 
