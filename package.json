@@ -1,0 +1,12 @@
+{
+  "name": "lictom",
+  "version": "1.0.0",
+  "description": "Controle de Saldos de Pregão - 23º Esqd C Sl",
+  "scripts": {
+    "build": "node build.js",
+    "watch": "node build.js --watch"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
+  }
+}

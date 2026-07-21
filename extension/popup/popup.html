@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 300px;
+      font-family: 'Segoe UI', system-ui, Arial, sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+      padding: 0;
+    }
+    .header {
+      background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+      color: white;
+      padding: 16px 20px;
+    }
+    .header h1 {
+      font-size: 18px;
+      font-weight: 800;
+      margin: 0;
+    }
+    .header span {
+      font-size: 11px;
+      opacity: 0.7;
+    }
+    .content {
+      padding: 16px 20px;
+    }
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 13px;
+    }
+    .status-row:last-child { border-bottom: none; }
+    .status-label { color: #64748b; }
+    .status-value { font-weight: 600; }
+    .status-ok { color: #16a34a; }
+    .status-err { color: #dc2626; }
+    .status-warn { color: #d97706; }
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+      margin-top: 12px;
+      transition: all 0.2s;
+    }
+    .btn:hover { opacity: 0.85; }
+    .btn-primary { background: #2563eb; color: white; }
+    .btn-success { background: #16a34a; color: white; }
+    .btn-outline {
+      background: white;
+      color: #374151;
+      border: 1px solid #d1d5db;
+    }
+    .toggle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      font-size: 13px;
+    }
+    .toggle {
+      position: relative;
+      width: 40px;
+      height: 22px;
+    }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background: #cbd5e1;
+      border-radius: 22px;
+      transition: 0.3s;
+    }
+    .toggle-slider:before {
+      content: "";
+      position: absolute;
+      height: 16px;
+      width: 16px;
+      left: 3px;
+      bottom: 3px;
+      background: white;
+      border-radius: 50%;
+      transition: 0.3s;
+    }
+    .toggle input:checked + .toggle-slider { background: #2563eb; }
+    .toggle input:checked + .toggle-slider:before { transform: translateX(18px); }
+    .divider {
+      height: 1px;
+      background: #e2e8f0;
+      margin: 12px 0;
+    }
+    .footer {
+      text-align: center;
+      padding: 10px;
+      font-size: 11px;
+      color: #94a3b8;
+      border-top: 1px solid #e2e8f0;
+    }
+    #updateStatus {
+      font-size: 12px;
+      text-align: center;
+      padding: 4px;
+      margin-top: 4px;
+      border-radius: 4px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>Lictom</h1>
+    <span>23ª Esqd C Sl — v<span id="version">...</span></span>
+  </div>
+
+  <div class="content">
+    <div class="status-row">
+      <span class="status-label">Status</span>
+      <span class="status-value" id="statusExt">...</span>
+    </div>
+    <div class="status-row">
+      <span class="status-label">Última atualização</span>
+      <span class="status-value" id="lastUpdate">...</span>
+    </div>
+    <div class="status-row">
+      <span class="status-label">Código carregado</span>
+      <span class="status-value" id="hasCode">...</span>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="toggle-row">
+      <span>Extensão ativa</span>
+      <label class="toggle">
+        <input type="checkbox" id="toggleEnabled" checked>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+
+    <div class="toggle-row">
+      <span>Auto-update</span>
+      <label class="toggle">
+        <input type="checkbox" id="toggleAutoUpdate" checked>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+
+    <button class="btn btn-primary" id="btnUpdate">Atualizar Agora</button>
+    <button class="btn btn-success" id="btnOpenSAG">Abrir SAG</button>
+    <div id="updateStatus"></div>
+  </div>
+
+  <div class="footer">Lictom — Atualizado automaticamente via GitHub</div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

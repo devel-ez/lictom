@@ -1,0 +1,381 @@
+javascript:(()=>{function x(t){return t.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})}function p(t){return typeof t!="string"?0:parseFloat(t.replace(/\./g,"").replace(",","."))||0}function d(t){if(typeof t!="string")return"";let e=document.createElement("div");return e.innerHTML=t,e.textContent||""}var _="https://sag.eb.mil.br/php/chamadas/gestaoAta.php",w=["CODIGO","TIPO_UNIDADE","UG_CODIGO","NUMERO_ATA","ANO_ATA","NUMERO_COMPRA","NUMERO_ITEM","DESCRICAO_DETALHADA","TIPO_ITEM","VALOR_UNITARIO","CNPJ","CNPJ_NOME","VIGENCIA_INICIAL","VIGENCIA_FINAL","QUANTIDADE_REGISTRADA","QUANTIDADE_DISPONIVEL"],$="160081",M=5e4;async function k(){let t=new URLSearchParams;t.set("metodo","tela"),t.set("fase","change"),t.set("sEcho","1"),t.set("iColumns",String(w.length)),t.set("iDisplayStart","0"),t.set("iDisplayLength",String(M)),w.forEach(r=>t.append("coluna[]",r)),t.append("CODIGO[]",$);let e=await fetch(`${_}?${t.toString()}`);if(!e.ok)throw new Error(`HTTP ${e.status}: ${e.statusText}`);let a=await e.json();return(a.aaData||a.data||[]).map(O)}function O(t){let e=p(d(t[9]));return{id:`${t[5]}_${t[6]}`,ug:d(t[0]),tipo:d(t[1]),numCompra:d(t[5]),numItem:d(t[6]),descricao:d(t[7]),valorUnitStr:d(t[9]),valorUnit:e,cnpj:d(t[10]),empresa:d(t[11]),vigFinal:d(t[13]),qtdDisponivel:d(t[15]),numDisponivel:p(d(t[15]))}}var u=500,m=[],l=[],I="",f=!0,s={},y={};function C(t){m=t,l=[...t]}function E(t){u=t}function c(){let t=document.getElementById("corpoTabela");if(!t)return;let e=l.length,a=l.slice(0,u);t.innerHTML=a.map(o=>{let r=y[o.id]!=null?y[o.id]:"",n=o.tipo.toLowerCase().includes("gerenciadora")?"var(--accent-blue)":"#d35400",i=o.numDisponivel>0?"var(--accent-green)":"var(--accent-red)",b=s[o.id]||0,h=b>0?`R$ ${x(b)}`:"R$ 0,00";return`<tr onmouseover="this.style.background='var(--row-hover)'" onmouseout="this.style.background='transparent'">
+      <td style="padding:8px;border:1px solid var(--border-color);">${o.ug}</td>
+      <td style="padding:8px;border:1px solid var(--border-color);color:${n};font-weight:bold;">${o.tipo}</td>
+      <td style="padding:8px;border:1px solid var(--border-color);font-weight:bold;">${o.numCompra}</td>
+      <td style="padding:8px;border:1px solid var(--border-color);font-weight:bold;">${o.numItem}</td>
+      <td style="padding:8px;border:1px solid var(--border-color);font-size:11px;">${o.descricao}</td>
+      <td style="padding:8px;border:1px solid var(--border-color);white-space:nowrap;">${o.cnpj}</td>
+      <td style="padding:8px;border:1px solid var(--border-color);font-size:11px;">${o.empresa}</td>
+      <td style="padding:8px;border:1px solid var(--border-color);">${o.vigFinal}</td>
+      <td style="padding:8px;border:1px solid var(--border-color);text-align:right;">${o.valorUnitStr}</td>
+      <td style="padding:8px;border:1px solid var(--border-color);text-align:center;font-weight:bold;color:${i};">${o.qtdDisponivel}</td>
+      <td style="padding:8px;border:1px solid var(--border-color);background:var(--yellow-cell);">
+        <input type="number" class="input-qtd" min="0" step="1"
+          value="${r}"
+          oninput="window.__ui.atualizarCalculo('${o.id}', this.value, ${o.valorUnit})">
+      </td>
+      <td style="padding:8px;border:1px solid var(--border-color);text-align:right;font-weight:bold;background:var(--yellow-cell);" id="total_${o.id}">${h}</td>
+    </tr>`}).join(""),P(e),z(e)}function P(t){let e=document.getElementById("contadorResultados");e&&(e.textContent=`${Math.min(t,u)} de ${t} itens`);let a=document.getElementById("totalItensEmpenho");if(a){let r=0;for(let n in s)s[n]>0&&r++;a.textContent=r}let o=document.getElementById("valorTotalEmpenho");if(o){let r=0;for(let n in s)s[n]>0&&(r+=s[n]);o.textContent=`R$ ${x(r)}`}}function z(t){let e=document.getElementById("avisoTruncamento");e&&(t>u?(e.textContent=`\u26A0\uFE0F Resultados truncados: mostrando ${u} de ${t} itens`,e.style.display="block"):e.style.display="none")}function R(t,e,a){let o=parseFloat(e)||0,r=o*a;s[t]=r,y[t]=o||void 0;let n=document.getElementById(`total_${t}`);n&&(n.textContent=r>0?`R$ ${x(r)}`:"R$ 0,00"),P(l.length)}function T(t){I===t?f=!f:(I=t,f=!0);let e=["numItem","valorUnit","numDisponivel","numCompra"];l.sort((a,o)=>{let r=a[t],n=o[t];return e.includes(t)?(r=typeof r=="number"?r:p(String(r)),n=typeof n=="number"?n:p(String(n))):(r=String(r).toLowerCase(),n=String(n).toLowerCase()),r<n?f?-1:1:r>n?f?1:-1:0}),c()}function N(t){let e=t.toLowerCase().trim();e?l=m.filter(a=>a.numCompra.toLowerCase().includes(e)||a.empresa.toLowerCase().includes(e)||a.descricao.toLowerCase().includes(e)||a.numItem.toLowerCase().includes(e)||a.cnpj.toLowerCase().includes(e)):l=[...m],c()}function U(){let t=["UG","TIPO","COMPRA","ITEM","DESCRI\xC7\xC3O","CNPJ","EMPRESA","VIG. FINAL","VALOR UNIT.","DISPON\xCDVEL","QTD EMPENHAR","TOTAL ITEM"],e=l.map(i=>{let b=s[i.id]||0,h=y[i.id]||"";return[i.ug,i.tipo,i.numCompra,i.numItem,`"${i.descricao}"`,i.cnpj,`"${i.empresa}"`,i.vigFinal,i.valorUnitStr,i.qtdDisponivel,h,b>0?x(b):"0,00"].join(";")}),a=[t.join(";"),...e].join(`
+`),o=new Blob(["\uFEFF"+a],{type:"text/csv;charset=utf-8;"}),r=URL.createObjectURL(o),n=document.createElement("a");n.href=r,n.download=`saldos_pregao_${new Date().toISOString().slice(0,10)}.csv`,n.click(),URL.revokeObjectURL(r)}window.__ui={atualizarCalculo:R,ordenarTabela:T,filtrarDados:N,exportarCSV:U};window.ordenarTabela=T;var L="lictom_dark_mode";function g(){return localStorage.getItem(L)==="true"}function S(){let t=!g();return localStorage.setItem(L,String(t)),v(t),t}function v(t){let e=document.documentElement;t?(e.style.setProperty("--bg-primary","#1a1a2e"),e.style.setProperty("--bg-secondary","#16213e"),e.style.setProperty("--bg-tertiary","#0f3460"),e.style.setProperty("--text-primary","#e0e0e0"),e.style.setProperty("--text-secondary","#a0a0a0"),e.style.setProperty("--border-color","#2a2a4a"),e.style.setProperty("--row-hover","#1e2a4a"),e.style.setProperty("--header-bg","#0f3460"),e.style.setProperty("--table-header","#16213e"),e.style.setProperty("--table-border","#2a2a4a"),e.style.setProperty("--input-bg","#1e2a4a"),e.style.setProperty("--input-text","#e0e0e0"),e.style.setProperty("--card-bg","#16213e"),e.style.setProperty("--accent-green","#4ade80"),e.style.setProperty("--accent-red","#f87171"),e.style.setProperty("--accent-blue","#60a5fa"),e.style.setProperty("--warning-bg","#78350f"),e.style.setProperty("--warning-text","#fde68a"),e.style.setProperty("--warning-border","#92400e"),document.body.classList.add("dark-mode")):(e.style.setProperty("--bg-primary","#f0f2f5"),e.style.setProperty("--bg-secondary","#ffffff"),e.style.setProperty("--bg-tertiary","#f8fafc"),e.style.setProperty("--text-primary","#1e293b"),e.style.setProperty("--text-secondary","#64748b"),e.style.setProperty("--border-color","#e2e8f0"),e.style.setProperty("--row-hover","#f0f8ff"),e.style.setProperty("--header-bg","linear-gradient(135deg,#1e3a5f 0%,#2d5a87 100%)"),e.style.setProperty("--table-header","#cbd5e1"),e.style.setProperty("--table-border","#b0bec5"),e.style.setProperty("--input-bg","#ffffff"),e.style.setProperty("--input-text","#333333"),e.style.setProperty("--card-bg","#ffffff"),e.style.setProperty("--accent-green","#27ae60"),e.style.setProperty("--accent-red","#c0392b"),e.style.setProperty("--accent-blue","#2563eb"),e.style.setProperty("--warning-bg","#fef3c7"),e.style.setProperty("--warning-text","#92400e"),e.style.setProperty("--warning-border","#fde68a"),document.body.classList.remove("dark-mode"))}v(g());var V=`
+  :root {
+    --bg-primary: #f0f2f5;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #f8fafc;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --border-color: #e2e8f0;
+    --row-hover: #f0f8ff;
+    --header-bg: linear-gradient(135deg,#1e3a5f 0%,#2d5a87 100%);
+    --table-header: #cbd5e1;
+    --table-border: #b0bec5;
+    --input-bg: #ffffff;
+    --input-text: #333333;
+    --card-bg: #ffffff;
+    --accent-green: #27ae60;
+    --accent-red: #c0392b;
+    --accent-blue: #2563eb;
+    --warning-bg: #fef3c7;
+    --warning-text: #92400e;
+    --warning-border: #fde68a;
+    --yellow-input: #fef9c3;
+    --yellow-cell: #fff9e6;
+    --sidebar-bg: #1e293b;
+    --sidebar-text: #94a3b8;
+    --sidebar-active: #2563eb;
+    --sidebar-hover: #334155;
+    --sidebar-width: 220px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, Arial, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Sidebar */
+  #sidebar {
+    width: var(--sidebar-width);
+    min-width: var(--sidebar-width);
+    background: var(--sidebar-bg);
+    display: flex;
+    flex-direction: column;
+    z-index: 20;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.15);
+  }
+  .sidebar-header {
+    padding: 20px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .sidebar-header h1 {
+    font-size: 18px;
+    font-weight: 800;
+    color: white;
+    margin: 0;
+  }
+  .sidebar-header span {
+    font-size: 11px;
+    color: var(--sidebar-text);
+    opacity: 0.7;
+  }
+  .sidebar-nav {
+    flex: 1;
+    padding: 12px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--sidebar-text);
+    transition: all 0.15s;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+  }
+  .sidebar-item:hover {
+    background: var(--sidebar-hover);
+    color: white;
+  }
+  .sidebar-item.active {
+    background: var(--sidebar-active);
+    color: white;
+    font-weight: 600;
+  }
+  .sidebar-item .icon {
+    font-size: 18px;
+    width: 24px;
+    text-align: center;
+  }
+  .sidebar-footer {
+    padding: 12px 16px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    font-size: 11px;
+    color: var(--sidebar-text);
+    opacity: 0.5;
+    text-align: center;
+  }
+
+  /* Main content */
+  #main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-width: 0;
+  }
+
+  /* Pages */
+  .page {
+    display: none;
+    flex-direction: column;
+    height: 100%;
+  }
+  .page.active {
+    display: flex;
+  }
+
+  /* Saldos page specific */
+  .page-header {
+    background: var(--header-bg);
+    padding: 12px 20px;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+
+  /* Placeholder page */
+  .placeholder {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: var(--text-secondary);
+  }
+  .placeholder .icon { font-size: 48px; opacity: 0.4; }
+  .placeholder h3 { font-size: 18px; color: var(--text-primary); }
+  .placeholder p { font-size: 14px; }
+
+  th { cursor: pointer; user-select: none; transition: background 0.15s; }
+  th:hover { background-color: #8ec8c9 !important; }
+  .input-qtd {
+    width: 70px; padding: 4px 6px;
+    border: 1px solid var(--border-color);
+    text-align: center; color: var(--input-text);
+    font-weight: bold; border-radius: 3px; font-size: 13px;
+    background: var(--input-bg);
+  }
+  .input-qtd:focus { outline: 2px solid var(--accent-blue); border-color: var(--accent-blue); }
+  .btn {
+    padding: 6px 14px; border: none; border-radius: 5px;
+    cursor: pointer; font-weight: 600; font-size: 13px;
+    transition: all 0.2s; display: inline-flex; align-items: center; gap: 4px;
+  }
+  .btn:hover { opacity: 0.85; transform: translateY(-1px); }
+  .btn-danger { background: #dc2626; color: white; }
+  .btn-success { background: #16a34a; color: white; }
+  .btn-primary { background: #2563eb; color: white; }
+  .btn-ghost {
+    background: rgba(255,255,255,0.15); color: white;
+    border: 1px solid rgba(255,255,255,0.3);
+  }
+  .btn-ghost:hover { background: rgba(255,255,255,0.25); }
+  #loading-overlay {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    position: fixed; inset: 0; background: var(--bg-primary); z-index: 100;
+  }
+  .spinner {
+    width: 48px; height: 48px; border: 5px solid var(--border-color);
+    border-top-color: var(--accent-blue); border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #loading-text { margin-top: 16px; color: var(--text-primary); font-size: 15px; font-weight: 500; }
+  #avisoTruncamento {
+    display: none; background: var(--warning-bg); color: var(--warning-text);
+    padding: 8px 16px; font-size: 13px; font-weight: 500;
+    border-bottom: 1px solid var(--warning-border);
+  }
+  #config-panel {
+    display: none; position: fixed; top: 0; right: 0; width: 320px; height: 100vh;
+    background: var(--card-bg); border-left: 1px solid var(--border-color);
+    box-shadow: -4px 0 20px rgba(0,0,0,0.15); z-index: 50;
+    padding: 24px; overflow-y: auto;
+  }
+  #config-panel.open { display: block; }
+  #config-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.3); z-index: 40;
+  }
+  #config-overlay.open { display: block; }
+  .config-group { margin-bottom: 20px; }
+  .config-label { font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .config-input {
+    width: 100%; padding: 8px 12px; border: 1px solid var(--border-color);
+    border-radius: 6px; font-size: 14px; background: var(--input-bg);
+    color: var(--input-text);
+  }
+  .config-input:focus { outline: 2px solid var(--accent-blue); border-color: var(--accent-blue); }
+  .toggle-switch {
+    position: relative; display: inline-block; width: 44px; height: 24px;
+  }
+  .toggle-switch input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider {
+    position: absolute; cursor: pointer; inset: 0;
+    background: #ccc; border-radius: 24px; transition: 0.3s;
+  }
+  .toggle-slider:before {
+    content: ""; position: absolute; height: 18px; width: 18px;
+    left: 3px; bottom: 3px; background: white; border-radius: 50%;
+    transition: 0.3s;
+  }
+  .toggle-switch input:checked + .toggle-slider { background: var(--accent-blue); }
+  .toggle-switch input:checked + .toggle-slider:before { transform: translateX(20px); }
+`,F=`
+<div id="loading-overlay">
+  <div class="spinner"></div>
+  <div id="loading-text">Carregando dados do SAG...</div>
+</div>
+
+<style>${V}</style>
+
+<!-- Config Overlay -->
+<div id="config-overlay" onclick="window.__app.toggleConfig()"></div>
+
+<!-- Config Panel -->
+<div id="config-panel">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
+    <h3 style="font-size:16px;font-weight:700;">Configura\xE7\xF5es</h3>
+    <button class="btn btn-danger" style="padding:4px 10px;font-size:12px;" onclick="window.__app.toggleConfig()">\u2715</button>
+  </div>
+
+  <div class="config-group">
+    <div class="config-label">Modo Escuro</div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <label class="toggle-switch">
+        <input type="checkbox" id="darkModeToggle" onchange="window.__app.toggleDark()">
+        <span class="toggle-slider"></span>
+      </label>
+      <span style="font-size:13px;" id="darkModeLabel">Desligado</span>
+    </div>
+  </div>
+
+  <div class="config-group">
+    <div class="config-label">M\xE1ximo de Linhas Vis\xEDveis</div>
+    <input type="number" class="config-input" id="limiteInput" value="500" min="50" max="50000" step="50"
+      onchange="window.__app.updateLimite(this.value)">
+    <div style="font-size:11px;color:var(--text-secondary);margin-top:4px;">Padr\xE3o: 500. Aumente se precisar ver mais itens.</div>
+  </div>
+
+  <div class="config-group">
+    <div class="config-label">Sobre</div>
+    <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;">
+      <strong>Lictom</strong> v1.0<br>
+      Controle de Saldos de Preg\xE3o<br>
+      23\xAA Esqd C Sl
+    </div>
+  </div>
+</div>
+
+<!-- Sidebar -->
+<div id="sidebar">
+  <div class="sidebar-header">
+    <h1>Lictom</h1>
+    <span>23\xAA Esqd C Sl</span>
+  </div>
+  <nav class="sidebar-nav">
+    <button class="sidebar-item active" data-page="saldos" onclick="window.__app.navigateTo('saldos')">
+      <span class="icon">\u{1F4CA}</span>
+      Saldos dos Preg\xF5es
+    </button>
+    <button class="sidebar-item" data-page="carona" onclick="window.__app.navigateTo('carona')">
+      <span class="icon">\u{1F697}</span>
+      Carona
+    </button>
+  </nav>
+  <div class="sidebar-footer">Lictom v1.0</div>
+</div>
+
+<!-- Main Content -->
+<div id="main-content">
+
+  <!-- Page: Saldos -->
+  <div id="page-saldos" class="page active">
+    <div class="page-header">
+      <div style="flex:1; min-width:180px;">
+        <h2 style="font-size:17px; margin:0; font-weight:700;">Controle de Saldos de Preg\xE3o</h2>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+        <input type="text" id="campoBusca" placeholder="Pesquisar..."
+          oninput="window.__ui.filtrarDados(this.value)"
+          style="padding:7px 12px; border-radius:6px; border:1px solid rgba(255,255,255,0.3); width:260px; font-size:13px; color:#333; background:white;">
+        <span id="contadorResultados" style="font-size:12px; color:#93c5fd; font-weight:600; white-space:nowrap;"></span>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:8px; margin-left:auto;">
+        <div style="background:rgba(0,0,0,0.2); padding:6px 14px; border-radius:6px; font-size:12px; display:flex; align-items:center; gap:14px;">
+          <span>Itens: <b id="totalItensEmpenho" style="color:#93c5fd;">0</b></span>
+          <span>Total: <b id="valorTotalEmpenho" style="color:#4ade80;">R$ 0,00</b></span>
+        </div>
+        <button class="btn btn-ghost" onclick="window.__ui.exportarCSV()" title="Exportar CSV">CSV</button>
+        <button class="btn btn-ghost" onclick="window.__app.toggleConfig()" title="Configura\xE7\xF5es">\u2699</button>
+      </div>
+    </div>
+
+    <div id="avisoTruncamento"></div>
+
+    <div style="flex:1; overflow:auto; background:var(--bg-secondary); box-shadow:0 1px 6px rgba(0,0,0,0.08);">
+      <table style="width:100%; border-collapse:collapse; font-size:13px; min-width:1400px;">
+        <thead style="background:var(--table-header); color:var(--text-primary); position:sticky; top:0; z-index:10;">
+          <tr>
+            <th onclick="window.ordenarTabela('ug')" style="padding:10px 8px; border:1px solid var(--table-border);">UG \u2195</th>
+            <th onclick="window.ordenarTabela('tipo')" style="padding:10px 8px; border:1px solid var(--table-border);">TIPO \u2195</th>
+            <th onclick="window.ordenarTabela('numCompra')" style="padding:10px 8px; border:1px solid var(--table-border);">COMPRA \u2195</th>
+            <th onclick="window.ordenarTabela('numItem')" style="padding:10px 8px; border:1px solid var(--table-border);">ITEM \u2195</th>
+            <th onclick="window.ordenarTabela('descricao')" style="padding:10px 8px; border:1px solid var(--table-border); width:25%;">DESCRI\xC7\xC3O \u2195</th>
+            <th onclick="window.ordenarTabela('cnpj')" style="padding:10px 8px; border:1px solid var(--table-border); white-space:nowrap;">CNPJ \u2195</th>
+            <th onclick="window.ordenarTabela('empresa')" style="padding:10px 8px; border:1px solid var(--table-border);">EMPRESA \u2195</th>
+            <th onclick="window.ordenarTabela('vigFinal')" style="padding:10px 8px; border:1px solid var(--table-border);">VIG. FINAL \u2195</th>
+            <th onclick="window.ordenarTabela('valorUnit')" style="padding:10px 8px; border:1px solid var(--table-border); text-align:right;">VALOR UNIT. \u2195</th>
+            <th style="padding:10px 8px; border:1px solid var(--table-border); text-align:center;">DISPON\xCDVEL</th>
+            <th style="padding:10px 8px; border:1px solid var(--table-border); text-align:center; background:var(--yellow-input);">QTD A EMPENHAR</th>
+            <th style="padding:10px 8px; border:1px solid var(--table-border); text-align:right; background:var(--yellow-input);">TOTAL ITEM</th>
+          </tr>
+        </thead>
+        <tbody id="corpoTabela"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Page: Carona -->
+  <div id="page-carona" class="page">
+    <div class="page-header">
+      <div style="flex:1;">
+        <h2 style="font-size:17px; margin:0; font-weight:700;">Carona</h2>
+      </div>
+    </div>
+    <div class="placeholder">
+      <div class="icon">\u{1F697}</div>
+      <h3>Carona</h3>
+      <p>Funcionalidade em desenvolvimento.</p>
+    </div>
+  </div>
+
+</div>
+`;document.body.innerHTML=F;v(g());var A=document.getElementById("darkModeToggle"),D=document.getElementById("darkModeLabel");A&&(A.checked=g());D&&(D.textContent=g()?"Ligado":"Desligado");window.__app={navigateTo(t){document.querySelectorAll(".sidebar-item").forEach(e=>{e.classList.toggle("active",e.dataset.page===t)}),document.querySelectorAll(".page").forEach(e=>{e.classList.toggle("active",e.id===`page-${t}`)})},toggleConfig(){let t=document.getElementById("config-panel"),e=document.getElementById("config-overlay");t.classList.contains("open")?(t.classList.remove("open"),e.classList.remove("open")):(t.classList.add("open"),e.classList.add("open"))},toggleDark(){let t=S(),e=document.getElementById("darkModeLabel");e&&(e.textContent=t?"Ligado":"Desligado"),c()},updateLimite(t){let e=parseInt(t)||500;E(Math.max(50,Math.min(5e4,e))),c()}};async function B(){try{let t=await k();C(t);let e=document.getElementById("loading-overlay");e&&(e.style.display="none"),c()}catch(t){let e=document.getElementById("loading-text"),a=document.querySelector(".spinner");e&&(e.textContent=`Erro ao carregar dados: ${t.message}`,e.style.color="#dc2626"),a&&(a.style.display="none"),console.error("Erro ao buscar dados do SAG:",t)}}B();})();
